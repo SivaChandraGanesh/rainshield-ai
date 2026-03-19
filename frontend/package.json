@@ -1,0 +1,8 @@
+{
+    "name": "rainshield-ai-frontend",
+    "version": "1.0.0",
+    "description": "RainShield AI Frontend",
+    "scripts": {
+        "start": "npx http-server . -p 5500 -o --cors"
+    }
+}

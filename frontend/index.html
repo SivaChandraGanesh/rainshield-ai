@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>RainShield AI – Parametric Insurance for Gig Workers</title>
+  <meta name="description" content="RainShield AI protects gig delivery workers from income loss due to heavy rain, extreme heat and pollution with instant automatic payouts." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ===== TOAST ===== -->
+<div id="toast"></div>
+
+<!-- ===========================
+     SCREEN 1: LOGIN / REGISTER
+     =========================== -->
+<div id="screen-login" class="screen active">
+  <div class="top-bar">
+    <div class="logo"><span class="logo-icon">🌧️</span> RainShield AI</div>
+  </div>
+
+  <div class="login-hero">
+    <img src="hero.png" alt="Delivery rider in heavy rain" id="hero-img" />
+    <div class="hero-badge">
+      <div class="hero-badge-icon">💧</div>
+      <div class="hero-badge-text">
+        <div class="hero-badge-label">Live Coverage</div>
+        <div class="hero-badge-value">Weather Monitoring Active</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="login-form-section">
+    <div class="login-tagline">
+      <h1>Rain shouldn't wash away your earnings.</h1>
+      <p>Join the fluid safety net for gig workers. Automated payouts when the weather gets tough.</p>
+    </div>
+
+    <form id="register-form" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="inp-name">Full Name</label>
+        <div class="form-field-wrap">
+          <span class="form-field-icon">👤</span>
+          <input id="inp-name" type="text" class="form-control" placeholder="Enter your name" required autocomplete="name" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="inp-phone">Phone Number</label>
+        <div class="form-field-wrap">
+          <span class="form-field-icon">📞</span>
+          <input id="inp-phone" type="tel" class="form-control" placeholder="+91 98765 43210" required autocomplete="tel" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="inp-city">Operating City</label>
+        <div class="form-field-wrap">
+          <span class="form-field-icon">📍</span>
+          <select id="inp-city" class="form-control" required>
+            <option value="">Select your city</option>
+            <optgroup label="🌊 Coastal (High Risk)">
+              <option value="Mumbai">Mumbai</option>
+              <option value="Chennai">Chennai</option>
+              <option value="Kolkata">Kolkata</option>
+              <option value="Kochi">Kochi</option>
+              <option value="Visakhapatnam">Visakhapatnam</option>
+              <option value="Goa">Goa</option>
+              <option value="Mangalore">Mangalore</option>
+              <option value="Surat">Surat</option>
+            </optgroup>
+            <optgroup label="🏙️ Metro (Medium Risk)">
+              <option value="Delhi">Delhi</option>
+              <option value="Bangalore">Bangalore</option>
+              <option value="Hyderabad">Hyderabad</option>
+              <option value="Pune">Pune</option>
+              <option value="Ahmedabad">Ahmedabad</option>
+              <option value="Jaipur">Jaipur</option>
+              <option value="Lucknow">Lucknow</option>
+            </optgroup>
+            <optgroup label="🌄 Other City (Low Risk)">
+              <option value="Indore">Indore</option>
+              <option value="Bhopal">Bhopal</option>
+              <option value="Nagpur">Nagpur</option>
+              <option value="Patna">Patna</option>
+              <option value="Other">Other City</option>
+            </optgroup>
+          </select>
+          <span class="select-arrow">▾</span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary" id="btn-register">
+        Get Started &nbsp;→
+      </button>
+    </form>
+
+    <div class="login-footer">
+      Already have an account? <a href="#" id="link-login">Log In</a>
+    </div>
+
+    <div class="guarantee-badge">
+      <div class="guarantee-dot"></div>
+      <span>Parametric Protection Guaranteed</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===========================
+     SCREEN 2: DASHBOARD
+     =========================== -->
+<div id="screen-dashboard" class="screen">
+  <div class="top-bar">
+    <div class="logo"><span class="logo-icon">🌧️</span> RainShield AI</div>
+    <button class="top-bar-action" id="btn-notif" title="Notifications">🔔</button>
+  </div>
+
+  <div class="page-content">
+    <!-- Hero plan card -->
+    <div class="dash-hero-card">
+      <div class="plan-row">
+        <div>
+          <div class="plan-label">Active Plan</div>
+          <div class="plan-price" id="dash-price">₹49<sub>/week</sub></div>
+        </div>
+        <div class="status-pill"><div class="status-dot"></div>Active</div>
+      </div>
+      <div class="coverage-row">
+        <div class="coverage-info">
+          <div class="coverage-label">Coverage Amount</div>
+          <div class="coverage-amount" id="dash-coverage">₹300.00</div>
+        </div>
+        <button class="btn-outline" onclick="showScreen('screen-insurance')">Upgrade</button>
+      </div>
+    </div>
+
+    <!-- Risk section -->
+    <div class="section-title">
+      <h3>Real-Time Risk</h3>
+      <span class="badge-live">● LIVE DATA</span>
+    </div>
+
+    <div class="card risk-card">
+      <div class="risk-header">
+        <span class="risk-icon">🌧️</span>
+        <div>
+          <div class="risk-title-label">Rain Risk</div>
+          <div class="risk-title-val risk-high" id="dash-risk-label">High</div>
+        </div>
+      </div>
+      <div class="risk-bar-track">
+        <div class="risk-bar-fill" id="dash-risk-bar" style="width: 85%"></div>
+      </div>
+    </div>
+
+    <!-- Weather grid -->
+    <div class="weather-grid">
+      <div class="weather-item">
+        <div class="weather-label">🌡️ Temp</div>
+        <div class="weather-val" id="dash-temp">38°C</div>
+      </div>
+      <div class="weather-item">
+        <div class="weather-label">💨 AQI</div>
+        <div class="weather-val" id="dash-aqi">280</div>
+      </div>
+      <div class="weather-item">
+        <div class="weather-label">🌧️ Rainfall</div>
+        <div class="weather-val" id="dash-rain">62mm</div>
+      </div>
+      <div class="weather-item">
+        <div class="weather-label">💧 Humidity</div>
+        <div class="weather-val" id="dash-humidity">87%</div>
+      </div>
+    </div>
+
+    <!-- Dashboard action buttons -->
+    <div style="display:flex; gap:10px; padding: 4px 16px 12px;">
+      <button class="btn-secondary" style="flex:1" onclick="showScreen('screen-insurance')">🛡️ Buy Insurance</button>
+      <button class="btn-secondary" style="flex:1" onclick="showScreen('screen-claims')">📋 Claim Status</button>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="section-title"><h3>Recent Activity</h3></div>
+    <div class="activity-list">
+      <div class="activity-item">
+        <div class="activity-icon">💳</div>
+        <div class="activity-text">
+          <div class="activity-title">Premium Paid</div>
+          <div class="activity-sub">Automatic • 2 days ago</div>
+        </div>
+        <div class="activity-amount negative">-₹<span id="dash-activity-price">49</span></div>
+      </div>
+      <div class="activity-item" onclick="showScreen('screen-claims')" style="cursor:pointer">
+        <div class="activity-icon">✅</div>
+        <div class="activity-text">
+          <div class="activity-title">Policy Renewed</div>
+          <div class="activity-sub">System Update • Today</div>
+        </div>
+        <div class="activity-amount">›</div>
+      </div>
+    </div>
+
+    <!-- Coverage area card -->
+    <div class="coverage-map-card mt-16">
+      <div class="map-placeholder">
+        🗺️
+        <div class="map-overlay">📍 Your Coverage Area</div>
+      </div>
+      <div class="map-info">
+        <p>Cloud density is increasing in your quadrant. We are monitoring parametric triggers for potential payouts.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" id="nav-home" onclick="showScreen('screen-dashboard'); setNav('nav-home')">
+      <span>🏠</span><span>Home</span><div class="nav-dot"></div>
+    </button>
+    <button class="nav-item" id="nav-insurance" onclick="showScreen('screen-insurance'); setNav('nav-insurance')">
+      <span>🛡️</span><span>Insurance</span><div class="nav-dot"></div>
+    </button>
+    <button class="nav-item" id="nav-claims" onclick="showScreen('screen-claims'); setNav('nav-claims')">
+      <span>📋</span><span>Claims</span><div class="nav-dot"></div>
+    </button>
+    <button class="nav-item" id="nav-profile" onclick="showScreen('screen-profile'); setNav('nav-profile')">
+      <span>👤</span><span>Profile</span><div class="nav-dot"></div>
+    </button>
+  </nav>
+</div>
+
+<!-- ===========================
+     SCREEN 3: BUY INSURANCE
+     =========================== -->
+<div id="screen-insurance" class="screen">
+  <div class="top-bar">
+    <div class="logo"><span class="logo-icon">🌧️</span> RainShield AI</div>
+    <button class="top-bar-action" onclick="goBack()">✕</button>
+  </div>
+
+  <div class="page-content">
+    <div class="insurance-header">
+      <h2>Pick your protection level</h2>
+      <p>Parametric coverage that pays out automatically when it rains. No claims, just rain.</p>
+    </div>
+
+    <!-- AI badge -->
+    <div class="ai-badge-section mt-8">
+      <div class="ai-badge-icon">🤖</div>
+      <div class="ai-badge-text">
+        <div class="ai-title">AI-based risk prediction model</div>
+        <p>Your city's geography determines your risk tier. Coastal = higher rain risk. Recommended plan highlighted below.</p>
+      </div>
+    </div>
+
+    <div class="plan-cards mt-12" id="plan-cards-container">
+      <!-- Plan cards injected by JS -->
+    </div>
+
+    <!-- Sticky footer -->
+    <div class="plan-footer">
+      <div class="plan-footer-info">
+        <div class="footer-label">Due Today</div>
+        <div class="footer-amount" id="footer-amount">₹49.00</div>
+        <div class="footer-cycle">Weekly (Auto-renew)</div>
+      </div>
+      <button class="btn-primary" id="btn-activate">Activate Plan →</button>
+    </div>
+  </div>
+
+  <!-- Bottom Nav (copy) -->
+  <nav class="bottom-nav">
+    <button class="nav-item" id="nav-home-ins" onclick="showScreen('screen-dashboard'); setNav('nav-home-ins')">
+      <span>🏠</span><span>Home</span><div class="nav-dot"></div>
+    </button>
+    <button class="nav-item active" id="nav-insurance-ins">
+      <span>🛡️</span><span>Insurance</span><div class="nav-dot"></div>
+    </button>
+    <button class="nav-item" id="nav-claims-ins" onclick="showScreen('screen-claims'); setNav('nav-claims-ins')">
+      <span>📋</span><span>Claims</span><div class="nav-dot"></div>
+    </button>
+    <button class="nav-item" id="nav-profile-ins" onclick="showScreen('screen-profile'); setNav('nav-profile-ins')">
+      <span>👤</span><span>Profile</span><div class="nav-dot"></div>
+    </button>
+  </nav>
+</div>
+
+<!-- ===========================
+     SCREEN 4: CLAIM STATUS
+     =========================== -->
+<div id="screen-claims" class="screen">
+  <div class="top-bar">
+    <div class="logo"><span class="logo-icon">🌧️</span> RainShield AI</div>
+    <button class="top-bar-action" onclick="goBack()">✕</button>
+  </div>
+
+  <div class="page-content">
+    <!-- Success header -->
+    <div class="claims-success-header">
+      <div class="success-circle">✅</div>
+      <h2>Claim Completed</h2>
+      <p>Your parametric protection worked exactly as promised.</p>
+    </div>
+
+    <!-- Payout card -->
+    <div class="payout-card">
+      <div class="payout-label">Payout Credited</div>
+      <div class="payout-amount" id="claim-payout">₹300</div>
+      <div class="payout-method">🏦 SENT TO PRIMARY BANK</div>
+    </div>
+
+    <!-- Event Detection Timeline -->
+    <div class="timeline-section">
+      <div class="timeline-title">Event Detection Timeline</div>
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-icon-wrap">
+            <div class="timeline-icon done">🌧️</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-head">
+              <span class="timeline-ttl">Rain detected</span>
+              <span class="timeline-check">✅</span>
+            </div>
+            <div class="timeline-desc" id="timeline-rain-desc">Intensity: 62mm/hr exceeding threshold at your location.</div>
+            <div class="timeline-meta">14:02 PM • Sensor Node #882</div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-icon-wrap">
+            <div class="timeline-icon done">⚡</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-head">
+              <span class="timeline-ttl">Claim triggered</span>
+              <span class="timeline-check">✅</span>
+            </div>
+            <div class="timeline-desc">Automatic verification complete. No manual filing required.</div>
+            <div class="timeline-meta">14:03 PM • AI Auditor</div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-icon-wrap">
+            <div class="timeline-icon completed">💵</div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-head">
+              <span class="timeline-ttl">Payment Settled</span>
+              <span class="final-badge">FINAL</span>
+            </div>
+            <div class="timeline-desc">Funds transferred via IMPS. Reference: <span id="claim-ref">#RX-29381-P</span></div>
+            <div class="timeline-meta">14:05 PM • Banking API</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Footer info -->
+    <div class="claims-footer-info">
+      <div class="claims-info-card">
+        <div class="claims-info-label">🛡️ Policy ID</div>
+        <div class="claims-info-val">RS-RAIN-2024-X</div>
+      </div>
+      <div class="claims-info-card">
+        <div class="claims-info-label">⏱️ Turnaround</div>
+        <div class="claims-info-val" id="claim-turnaround">3 Minutes</div>
+      </div>
+    </div>
+
+    <div class="return-btn-wrap">
+      <button class="btn-primary" onclick="showScreen('screen-dashboard'); setNav('nav-home')">
+        Return to Dashboard →
+      </button>
+    </div>
+  </div>
+
+  <!-- Bottom Nav (copy) -->
+  <nav class="bottom-nav">
+    <button class="nav-item" id="nav-home-clm" onclick="showScreen('screen-dashboard'); setNav('nav-home-clm')">
+      <span>🏠</span><span>Home</span><div class="nav-dot"></div>
+    </button>
+    <button class="nav-item" id="nav-insurance-clm" onclick="showScreen('screen-insurance'); setNav('nav-insurance-clm')">
+      <span>🛡️</span><span>Insurance</span><div class="nav-dot"></div>
+    </button>
+    <button class="nav-item active" id="nav-claims-clm">
+      <span>📋</span><span>Claims</span><div class="nav-dot"></div>
+    </button>
+    <button class="nav-item" id="nav-profile-clm" onclick="showScreen('screen-profile'); setNav('nav-profile-clm')">
+      <span>👤</span><span>Profile</span><div class="nav-dot"></div>
+    </button>
+  </nav>
+</div>
+
+<!-- ===========================
+     SCREEN 5: PROFILE
+     =========================== -->
+<div id="screen-profile" class="screen">
+  <div class="top-bar">
+    <div class="logo"><span class="logo-icon">🌧️</span> RainShield AI</div>
+    <button class="top-bar-action" onclick="goBack()">✕</button>
+  </div>
+
+  <div class="page-content">
+    <div class="profile-hero">
+      <div class="profile-avatar" id="profile-avatar">R</div>
+      <div class="profile-name" id="profile-name">Rahul Kumar</div>
+      <div class="profile-city" id="profile-city">📍 Mumbai</div>
+    </div>
+
+    <div class="profile-section">
+      <div class="profile-card">
+        <h3 style="margin-bottom:8px;">Account Details</h3>
+        <div class="profile-row"><span class="profile-row-label">Name</span><span class="profile-row-val" id="prof-name">Rahul Kumar</span></div>
+        <div class="profile-row"><span class="profile-row-label">Phone</span><span class="profile-row-val" id="prof-phone">+91 98765 43210</span></div>
+        <div class="profile-row"><span class="profile-row-label">City</span><span class="profile-row-val" id="prof-city">Mumbai</span></div>
+        <div class="profile-row"><span class="profile-row-label">User ID</span><span class="profile-row-val" id="prof-id">RS-2024-001</span></div>
+      </div>
+      <div class="profile-card">
+        <h3 style="margin-bottom:8px;">Current Plan</h3>
+        <div class="profile-row"><span class="profile-row-label">Plan</span><span class="profile-row-val" id="prof-plan">₹49/week</span></div>
+        <div class="profile-row"><span class="profile-row-label">Risk Level</span><span class="profile-row-val" id="prof-risk">High</span></div>
+        <div class="profile-row"><span class="profile-row-label">Coverage</span><span class="profile-row-val" id="prof-coverage">₹1,200</span></div>
+        <div class="profile-row"><span class="profile-row-label">Status</span><span class="profile-row-val" style="color:#10B981">Active</span></div>
+      </div>
+      <button class="btn-primary" onclick="logout()" style="margin-top:8px;background:linear-gradient(135deg,#EF4444,#B91C1C)">
+        Log Out
+      </button>
+    </div>
+  </div>
+
+  <!-- Bottom Nav (copy) -->
+  <nav class="bottom-nav">
+    <button class="nav-item" id="nav-home-prof" onclick="showScreen('screen-dashboard'); setNav('nav-home-prof')">
+      <span>🏠</span><span>Home</span><div class="nav-dot"></div>
+    </button>
+    <button class="nav-item" id="nav-insurance-prof" onclick="showScreen('screen-insurance'); setNav('nav-insurance-prof')">
+      <span>🛡️</span><span>Insurance</span><div class="nav-dot"></div>
+    </button>
+    <button class="nav-item" id="nav-claims-prof" onclick="showScreen('screen-claims'); setNav('nav-claims-prof')">
+      <span>📋</span><span>Claims</span><div class="nav-dot"></div>
+    </button>
+    <button class="nav-item active" id="nav-profile-prof">
+      <span>👤</span><span>Profile</span><div class="nav-dot"></div>
+    </button>
+  </nav>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

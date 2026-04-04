@@ -221,7 +221,6 @@ Team Name: CYBER SPARTANS
 🔗 Links
 🔗 GitHub Repository: https://github.com/SivaChandraGanesh/rainshield-ai.git
 🎥 Final Project Demo: https://youtu.be/cwLpRxUFuI0
-🎬 Demo Video: YOUR_VIDEO_LINK
 📌 Conclusion
 
 RainShield AI transforms insurance for gig workers by making it:

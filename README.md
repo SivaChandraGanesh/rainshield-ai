@@ -229,3 +229,6 @@ RainShield AI transforms insurance for gig workers by making it:
 🤖 Automated
 🔍 Transparent
 💰 Affordable
+
+📊 Pitch Deck
+https://docs.google.com/presentation/d/14-3fSrtn8tueODElJXTHlYBjjc9nk1Qy/edit?usp=sharing&ouid=113070993003361917617&rtpof=true&sd=true

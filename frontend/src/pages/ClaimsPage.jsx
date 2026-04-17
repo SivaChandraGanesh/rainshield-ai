@@ -7,9 +7,9 @@ import TopBar from '../components/TopBar';
 import BottomNav from '../components/BottomNav';
 
 const TIMELINE = [
-  { icon: '📡', title: 'Weather Detection', desc: 'Satellite sensors detected heavy rainfall exceeding threshold', status: 'done', time: '10:32 AM' },
-  { icon: '🤖', title: 'AI Risk Analysis', desc: 'Neural network confirmed parametric trigger conditions met', status: 'done', time: '10:33 AM' },
-  { icon: '✅', title: 'Claim Auto-Approved', desc: 'Smart contract validated — no manual review needed', status: 'done', time: '10:33 AM' },
+  { icon: '📡', title: 'Weather Detection', desc: 'Live sensor data shows rainfall exceeded the trigger threshold for your plan', status: 'done', time: '10:32 AM' },
+  { icon: '⚙️', title: 'Parametric Engine', desc: 'Scoring engine evaluated all factors — threshold breach confirmed (objective, auditable)', status: 'done', time: '10:33 AM' },
+  { icon: '✅', title: 'Claim Auto-Approved', desc: 'Trigger conditions met — no manual review needed under parametric model', status: 'done', time: '10:33 AM' },
   { icon: '💸', title: 'Instant Payout Sent', desc: 'Funds transferred to your linked UPI/bank account', status: 'completed', time: '10:35 AM' },
 ];
 

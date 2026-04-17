@@ -44,7 +44,7 @@ export default function InsurancePage() {
       <div className="page-content">
         <div className="ins-header">
           <h2>Choose Your Shield</h2>
-          <p>AI-powered plans matched to your city's risk profile</p>
+          <p>Plans matched to your city's parametric risk profile</p>
         </div>
 
         <div className="ins-plans">
@@ -87,8 +87,8 @@ export default function InsurancePage() {
                     <span>Instant auto-payout</span>
                   </div>
                   <div className="ins-feat">
-                    <span className="ins-feat-icon">🤖</span>
-                    <span>AI risk monitoring 24/7</span>
+                    <span className="ins-feat-icon">⚙️</span>
+                    <span>Parametric monitoring 24/7</span>
                   </div>
                 </div>
 
@@ -102,11 +102,11 @@ export default function InsurancePage() {
 
                 {isSelected && (
                   <div className="ins-confidence">
-                    <div className="ins-conf-label">AI Confidence Score</div>
+                    <div className="ins-conf-label">Plan Match Score</div>
                     <div className="ins-conf-bar">
-                      <div className="ins-conf-fill" style={{ width: '98%' }}></div>
+                      <div className="ins-conf-fill" style={{ width: p.id === 'high' ? '90%' : p.id === 'medium' ? '80%' : '70%' }}></div>
                     </div>
-                    <div className="ins-conf-val">98% Match</div>
+                    <div className="ins-conf-val">{p.id === 'high' ? '90%' : p.id === 'medium' ? '80%' : '70%'} Risk Match</div>
                   </div>
                 )}
               </div>
@@ -119,12 +119,12 @@ export default function InsurancePage() {
           📜 View Policy Terms & Exclusions →
         </button>
 
-        {/* AI badge */}
+        {/* Engine badge */}
         <div className="ins-ai-badge">
-          <span className="ins-ai-icon">🧠</span>
+          <span className="ins-ai-icon">⚙️</span>
           <div>
-            <div className="ins-ai-title">AI-Powered Pricing</div>
-            <p>Premiums calculated using real-time satellite data, weather models, and historical claim patterns.</p>
+            <div className="ins-ai-title">Parametric Pricing Engine</div>
+            <p>Premiums calculated using city flood index, seasonal patterns, and real-time weather thresholds.</p>
           </div>
         </div>
       </div>

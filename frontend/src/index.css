@@ -1955,3 +1955,256 @@ p  { font-size: 0.92rem; color: var(--grey-500); line-height: 1.6; }
   background: #D1FAE5; color: #065F46;
 }
 .risk-badge-low .login-risk-dot { background: #10B981; }
+
+/* ============================================
+   LIVE MONITORING PANEL
+   ============================================ */
+.dash-monitor-card {
+  margin: 0 16px 12px;
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  border: 1px solid var(--grey-200);
+  box-shadow: var(--shadow-sm);
+}
+
+.dash-monitor-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  gap: 8px;
+}
+
+.dash-monitor-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 50px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.dash-monitor-meta {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.dash-monitor-source {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--blue-primary);
+  margin-bottom: 3px;
+}
+
+.dash-monitor-time {
+  font-size: 0.65rem;
+  color: var(--grey-500);
+}
+
+.dash-monitor-loading {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--grey-500);
+  padding: 12px 0;
+}
+
+.dash-monitor-metric {
+  margin-bottom: 12px;
+}
+
+.dash-monitor-metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.dash-monitor-metric-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--grey-700);
+}
+
+.dash-monitor-metric-vals {
+  font-size: 0.82rem;
+}
+
+.dash-monitor-metric-vals strong {
+  color: var(--grey-900);
+  font-weight: 700;
+}
+
+.dash-monitor-threshold {
+  font-size: 0.72rem;
+  color: var(--grey-500);
+}
+
+.dash-monitor-bar-bg {
+  width: 100%;
+  height: 6px;
+  background: var(--grey-200);
+  border-radius: 50px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.dash-monitor-bar-fill {
+  height: 100%;
+  border-radius: 50px;
+  transition: width 0.6s ease, background 0.3s ease;
+}
+
+.dash-monitor-dist {
+  font-size: 0.72rem;
+  color: var(--grey-500);
+  font-weight: 500;
+}
+
+.dash-monitor-mini-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--grey-100);
+}
+
+.dash-monitor-mini {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--grey-900);
+  background: var(--grey-100);
+  border-radius: var(--radius-sm);
+  padding: 8px 6px;
+  text-align: center;
+}
+
+.dash-monitor-mini-label {
+  font-size: 0.62rem;
+  color: var(--grey-500);
+  font-weight: 500;
+}
+
+.dash-monitor-footer {
+  margin-top: 10px;
+  font-size: 0.68rem;
+  color: var(--grey-500);
+  text-align: center;
+}
+
+/* Data source label below weather grid */
+.dash-data-source {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--blue-primary);
+  margin: -6px 0 12px;
+}
+
+/* ============================================
+   AI INSIGHTS — PARAMETRIC ENGINE STYLES
+   ============================================ */
+
+/* Formula display */
+.ai-formula-box {
+  background: var(--grey-100);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-bottom: 10px;
+  overflow-x: auto;
+}
+
+.ai-formula-text {
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  color: var(--grey-700);
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.ai-formula-text strong {
+  color: var(--blue-primary);
+}
+
+/* Transparency card */
+.ai-transparency-card {
+  margin: 0 16px 12px;
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  border: 1px solid var(--grey-200);
+}
+
+.ai-transparency-intro {
+  font-size: 0.85rem;
+  color: var(--grey-700);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.ai-transparency-intro strong {
+  color: var(--grey-900);
+}
+
+/* Comparison table */
+.ai-transparency-table {
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--grey-200);
+  margin-bottom: 14px;
+}
+
+.ai-trans-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1.3fr 1.1fr;
+  padding: 9px 12px;
+  font-size: 0.78rem;
+  border-bottom: 1px solid var(--grey-100);
+  gap: 4px;
+}
+
+.ai-trans-row:last-child { border-bottom: none; }
+
+.ai-trans-header {
+  background: var(--grey-100);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--grey-500);
+}
+
+.ai-trans-yes {
+  color: #065F46;
+  font-weight: 600;
+}
+
+.ai-trans-no {
+  color: var(--grey-500);
+}
+
+/* Future ML note */
+.ai-transparency-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--blue-pale);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 0.8rem;
+  color: var(--grey-700);
+  line-height: 1.5;
+}
+
+.ai-transparency-note strong {
+  color: var(--blue-primary);
+}
+
+/* val-low colouring */
+.ai-val-low { color: var(--success); }

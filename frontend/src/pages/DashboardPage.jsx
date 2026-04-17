@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
-import { apiGetWeather, apiCheckClaim } from '../services/api';
+import { apiGetWeather, apiCheckClaim, apiGetMonitoringStatus } from '../services/api';
 import { formatCurrency } from '../utils/utils';
 import TopBar from '../components/TopBar';
 import BottomNav from '../components/BottomNav';
@@ -12,6 +12,19 @@ function getGreeting() {
   if (h < 17) return 'Good Afternoon';
   return 'Good Evening';
 }
+
+function formatTime(isoString) {
+  if (!isoString) return '--:--';
+  try {
+    return new Date(isoString).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  } catch (_) { return '--:--'; }
+}
+
+const STATUS_CONFIG = {
+  Safe:      { color: '#10B981', bg: 'rgba(16,185,129,0.12)', icon: '✅', label: 'Safe Zone' },
+  Near:      { color: '#F59E0B', bg: 'rgba(245,158,11,0.12)', icon: '⚠️', label: 'Near Threshold' },
+  Triggered: { color: '#EF4444', bg: 'rgba(239,68,68,0.12)',  icon: '🔴', label: 'Triggered!' },
+};
 
 const EARNING_MAP = {
   'Swiggy': 35, 'Zomato': 35, 'Amazon Flex': 45,
@@ -24,27 +37,54 @@ export default function DashboardPage() {
   const [simulating, setSimulating] = useState(false);
   const [simStep, setSimStep] = useState(0);
 
+  // Live monitoring state
+  const [monitoring, setMonitoring] = useState(null);
+  const [monLastUpdated, setMonLastUpdated] = useState(null);
+  const [monLoading, setMonLoading] = useState(true);
+  const intervalRef = useRef(null);
+
   useEffect(() => {
     if (!user) navigate('/', { replace: true });
   }, [user, navigate]);
 
+  // --- Initial weather + claim fetch ---
   useEffect(() => {
     if (!user) return;
     const fetchData = async () => {
-      let weatherData = { rainfall: 62, temperature: 38, aqi: 280, humidity: 87 };
+      let weatherData = { rainfall: 20, temperature: 33, aqi: 120, humidity: 65 };
       try {
-        const w = await apiGetWeather();
+        const w = await apiGetWeather(user.city);
         if (w.success) weatherData = w.data;
-      } catch (_) { }
+      } catch (_) {}
       setWeather(weatherData);
 
       try {
-        const claimData = await apiCheckClaim();
+        const claimData = await apiCheckClaim(user.userId, user.city);
         if (claimData.success) setClaim(claimData);
-      } catch (_) { }
+      } catch (_) {}
     };
     fetchData();
   }, [user, setWeather, setClaim]);
+
+  // --- Live monitoring: poll every 30 seconds ---
+  const fetchMonitoring = useCallback(async () => {
+    if (!user) return;
+    try {
+      const data = await apiGetMonitoringStatus(user.city);
+      if (data.success) {
+        setMonitoring(data);
+        setMonLastUpdated(new Date().toISOString());
+      }
+    } catch (_) {}
+    setMonLoading(false);
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+    fetchMonitoring();
+    intervalRef.current = setInterval(fetchMonitoring, 30000);
+    return () => clearInterval(intervalRef.current);
+  }, [user, fetchMonitoring]);
 
   if (!user || !plan) return null;
 
@@ -52,7 +92,7 @@ export default function DashboardPage() {
   const coverage = plan.coverage || 300;
   const risk = plan.risk || 'Medium';
   const riskPct = risk === 'High' ? 85 : risk === 'Medium' ? 55 : 25;
-  const w = weather || { rainfall: 62, temperature: 38, aqi: 280, humidity: 87 };
+  const w = weather || { rainfall: 20, temperature: 33, aqi: 120, humidity: 65 };
   const firstName = user.name?.split(' ')[0] || 'User';
 
   const perOrder = EARNING_MAP[user.platform] || 30;
@@ -60,15 +100,26 @@ export default function DashboardPage() {
   const dailyIncome = perOrder * dailyOrders;
   const incomeAtRisk = Math.round(dailyIncome * 0.7);
 
+  // Monitoring derived values
+  const monStatus = monitoring?.overallStatus || 'Safe';
+  const monCfg = STATUS_CONFIG[monStatus] || STATUS_CONFIG.Safe;
+  const rainMon = monitoring?.weather?.rainfall;
+  const distPercent = rainMon
+    ? Math.min(100, Math.round((rainMon.value / rainMon.threshold) * 100))
+    : 0;
+
   const handleSimulate = () => {
     setSimulating(true);
     setSimStep(1);
     setTimeout(() => setSimStep(2), 1200);
     setTimeout(() => setSimStep(3), 2400);
     setTimeout(() => {
+      const simRainfall = Math.floor(55 + Math.random() * 20);
       setClaim({
-        claimTriggered: true, rainfall: 62, triggerThreshold: 50,
-        payout: 300, status: 'APPROVED', reference: `#RX-${Math.floor(10000 + Math.random() * 90000)}-P`, turnaround: '3 Minutes',
+        claimTriggered: true, rainfall: simRainfall, triggerThreshold: 50,
+        payout: 300, status: 'APPROVED',
+        reference: `#RX-${Math.floor(10000 + Math.random() * 90000)}-P`,
+        turnaround: '3 Minutes',
       });
       setSimStep(4);
     }, 3600);
@@ -84,7 +135,7 @@ export default function DashboardPage() {
         <div className="dash-greeting stagger-1">
           <div>
             <div className="dash-greeting-text">{getGreeting()}, {firstName} 👋</div>
-            <div className="dash-greeting-sub">📍 {user.city} • Weather monitoring active</div>
+            <div className="dash-greeting-sub">📍 {user.city} • Parametric monitoring active</div>
           </div>
         </div>
 
@@ -93,7 +144,7 @@ export default function DashboardPage() {
           <div className="dash-alert stagger-2">
             <span className="dash-alert-icon">⚠️</span>
             <div className="dash-alert-text">
-              <strong>Heavy rain alert</strong> — Payout may trigger automatically
+              <strong>High risk zone</strong> — Payout may trigger automatically
             </div>
           </div>
         )}
@@ -158,19 +209,96 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* ============================================
+            LIVE MONITORING PANEL (New)
+            ============================================ */}
+        <div className="section-title stagger-3">
+          <h3>Live Monitoring</h3>
+          <span className="badge-live"><span className="pulse-dot-sm"></span> LIVE</span>
+        </div>
+
+        <div className="dash-monitor-card stagger-3">
+          {/* Header row */}
+          <div className="dash-monitor-header">
+            <div className="dash-monitor-status-pill" style={{ background: monCfg.bg, color: monCfg.color }}>
+              <span>{monCfg.icon}</span>
+              <span>{monCfg.label}</span>
+            </div>
+            <div className="dash-monitor-meta">
+              <div className="dash-monitor-source">
+                {monitoring?.dataSource === 'live' ? '🌐 Live Data' : '📊 Simulated Data'}
+              </div>
+              <div className="dash-monitor-time">
+                Updated: {monLastUpdated ? formatTime(monLastUpdated) : '—'}
+              </div>
+            </div>
+          </div>
+
+          {monLoading ? (
+            <div className="dash-monitor-loading">Fetching monitoring data…</div>
+          ) : (
+            <>
+              {/* Rainfall bar */}
+              {rainMon && (
+                <div className="dash-monitor-metric">
+                  <div className="dash-monitor-metric-row">
+                    <span className="dash-monitor-metric-label">🌧️ Rainfall</span>
+                    <span className="dash-monitor-metric-vals">
+                      <strong>{rainMon.value}mm</strong>
+                      <span className="dash-monitor-threshold"> / {rainMon.threshold}mm trigger</span>
+                    </span>
+                  </div>
+                  <div className="dash-monitor-bar-bg">
+                    <div
+                      className="dash-monitor-bar-fill"
+                      style={{
+                        width: `${distPercent}%`,
+                        background: distPercent >= 100 ? '#EF4444' : distPercent >= 70 ? '#F59E0B' : '#10B981',
+                      }}
+                    />
+                  </div>
+                  <div className="dash-monitor-dist">
+                    {rainMon.distToTrigger > 0
+                      ? `${rainMon.distToTrigger}mm away from trigger`
+                      : '⚡ Trigger threshold exceeded!'}
+                  </div>
+                </div>
+              )}
+
+              {/* Other metrics mini-row */}
+              {monitoring?.weather && (
+                <div className="dash-monitor-mini-row">
+                  <div className="dash-monitor-mini">
+                    <span>🌡️ {monitoring.weather.temperature?.value ?? w.temperature}°C</span>
+                    <span className="dash-monitor-mini-label">Temp</span>
+                  </div>
+                  <div className="dash-monitor-mini">
+                    <span>💨 AQI {monitoring.weather.aqi?.value ?? w.aqi}</span>
+                    <span className="dash-monitor-mini-label">Air Quality</span>
+                  </div>
+                  <div className="dash-monitor-mini">
+                    <span>📊 {((monitoring.parametricScore ?? 0) * 100).toFixed(1)}%</span>
+                    <span className="dash-monitor-mini-label">Risk Score</span>
+                  </div>
+                </div>
+              )}
+
+              <div className="dash-monitor-footer">
+                ⏱️ Auto-refreshes every 30 seconds
+              </div>
+            </>
+          )}
+        </div>
+
         {/* Risk gauge */}
         <div className="section-title stagger-3">
           <h3>Real-Time Risk</h3>
-          <span className="badge-live"><span className="pulse-dot-sm"></span> LIVE</span>
         </div>
 
         <div className="risk-gauge-card stagger-3">
           <div className="risk-gauge-wrap">
             <svg className="risk-gauge-svg" viewBox="0 0 120 70">
-              <path
-                d="M10,65 A50,50 0 0,1 110,65"
-                fill="none" stroke="#E5E7EB" strokeWidth="10" strokeLinecap="round"
-              />
+              <path d="M10,65 A50,50 0 0,1 110,65" fill="none" stroke="#E5E7EB" strokeWidth="10" strokeLinecap="round" />
               <path
                 d="M10,65 A50,50 0 0,1 110,65"
                 fill="none"
@@ -195,7 +323,7 @@ export default function DashboardPage() {
           </div>
           <div className="risk-gauge-info">
             <span className="risk-icon-sm">🌧️</span>
-            <span>Rain risk for {user.city} based on {w.rainfall}mm rainfall</span>
+            <span>Rain risk for {user.city} — {w.rainfall}mm current rainfall</span>
           </div>
         </div>
 
@@ -219,10 +347,15 @@ export default function DashboardPage() {
           </div>
           <div className="weather-card-v2 weather-humid">
             <div className="weather-card-icon">💧</div>
-            <div className="weather-card-val">{w.humidity || 87}%</div>
+            <div className="weather-card-val">{w.humidity || 65}%</div>
             <div className="weather-card-label">Humidity</div>
           </div>
         </div>
+        {w.source && (
+          <div className="dash-data-source">
+            {w.source === 'live' ? '🌐 Live weather data' : '📊 Simulated weather data'}
+          </div>
+        )}
 
         {/* Simulate Rain Event */}
         <div className="section-title"><h3>Simulation</h3></div>
@@ -239,11 +372,11 @@ export default function DashboardPage() {
             <div className="dash-sim-steps">
               <div className={`dash-sim-step ${simStep >= 1 ? 'dash-sim-active' : ''}`}>
                 <span className="dash-sim-dot">🌧️</span>
-                <span>{simStep >= 1 ? 'Heavy rain detected — 62mm' : '...'}</span>
+                <span>{simStep >= 1 ? 'Heavy rain detected — exceeds threshold' : '...'}</span>
               </div>
               <div className={`dash-sim-step ${simStep >= 2 ? 'dash-sim-active' : ''}`}>
-                <span className="dash-sim-dot">🤖</span>
-                <span>{simStep >= 2 ? 'AI confirms threshold exceeded' : '...'}</span>
+                <span className="dash-sim-dot">⚙️</span>
+                <span>{simStep >= 2 ? 'Parametric engine confirms threshold exceeded' : '...'}</span>
               </div>
               <div className={`dash-sim-step ${simStep >= 3 ? 'dash-sim-active' : ''}`}>
                 <span className="dash-sim-dot">✅</span>
@@ -273,7 +406,7 @@ export default function DashboardPage() {
         <div className="section-title"><h3>Explore</h3></div>
         <div className="dash-explore stagger-6">
           <button className="dash-explore-btn" onClick={() => navigate('/ai-insights')}>
-            <span>🧠</span> AI Insights
+            <span>⚙️</span> Scoring Engine
           </button>
           <button className="dash-explore-btn" onClick={() => navigate('/financials')}>
             <span>💰</span> Financials
@@ -321,7 +454,7 @@ export default function DashboardPage() {
             <div className="map-overlay">📍 {user.city} Coverage Area</div>
           </div>
           <div className="map-info">
-            <p>Cloud density is increasing in your quadrant. We are monitoring parametric triggers for potential payouts.</p>
+            <p>Parametric monitoring is active for your city. Triggers are evaluated against live weather thresholds automatically.</p>
           </div>
         </div>
       </div>
